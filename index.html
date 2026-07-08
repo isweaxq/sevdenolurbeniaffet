@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Beni Affet Sevde</title>
     <style>
         * {
@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* iPhone'da butona tıklayınca çıkan mavi gölgeyi siler */
         }
 
         body {
@@ -17,9 +18,14 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            min-height: -webkit-fill-available; /* iPhone Safari ekran boyutu fix */
             background: #ffe4e1;
             overflow: hidden;
             text-align: center;
+        }
+
+        html {
+            height: -webkit-fill-available; /* iPhone Safari ekran boyutu fix */
         }
 
         .container {
@@ -57,7 +63,7 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: transform 0.2s ease, margin 0.2s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             min-width: 120px;
         }
@@ -67,18 +73,9 @@
             color: white;
         }
 
-        .btn-yes:hover {
-            background-color: #27ae60;
-            transform: scale(1.05);
-        }
-
         .btn-no {
             background-color: #e74c3c;
             color: white;
-        }
-
-        .btn-no:hover {
-            background-color: #c0392b;
         }
 
         /* Tüm ekranı kaplayan Evet butonu ayarı */
@@ -88,7 +85,8 @@
             left: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
-            font-size: 5rem !important;
+            height: -webkit-fill-available !important;
+            font-size: 4rem !important;
             border-radius: 0 !important;
             z-index: 9999 !important;
             display: flex;
@@ -161,47 +159,34 @@
             clickCount++;
             
             if (clickCount >= 8) {
-                // 8. tıklamada Evet butonu tüm ekranı kaplar
                 yesBtn.classList.add('fullscreen-yes');
                 yesBtn.innerText = "EVET!";
                 noBtn.style.display = 'none';
             } else {
-                // Her hayır butonuna basıldığında Evet butonu büyür
-                yesScale += 1; 
+                yesScale += 0.8; // Taşma yapmaması için büyüme oranını iPhone'a göre optimize ettim
                 yesBtn.style.transform = `scale(${yesScale})`;
-                yesBtn.style.margin = `${yesScale * 10}px`;
+                yesBtn.style.margin = `${yesScale * 8}px`;
             }
         }
 
         function sayYes() {
-            // Tam ekran modundaysa sınıfı temizle
             yesBtn.classList.remove('fullscreen-yes');
-            
-            // Başarı ekranına dönüştür
             mainCard.innerHTML = `
-                <h1 style="font-size: 3rem; color: #ff4d6d;">Biliyordummm! 🥰</h1>
-                <p style="font-size: 1.5rem; color: #c0392b; font-weight: bold;">Sen müthiş birisin Sevde! ❤️</p>
+                <h1 style="font-size: 2.5rem; color: #ff4d6d; padding: 10px;">Biliyordummm! 🥰</h1>
+                <p style="font-size: 1.4rem; color: #c0392b; font-weight: bold; padding: 10px;">Sen müthiş birisin Sevde! ❤️</p>
             `;
-            
-            // Balon yağmurunu başlat
             setInterval(createBalloon, 300);
         }
 
         function createBalloon() {
             const balloon = document.createElement('div');
             balloon.classList.add('balloon');
-            
             const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#c9184a', '#ffccd5'];
             balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
-            
             balloon.style.left = Math.random() * 100 + 'vw';
             balloon.style.animationDuration = (Math.random() * 2 + 3) + 's';
-            
             document.body.appendChild(balloon);
-            
-            setTimeout(() => {
-                balloon.remove();
-            }, 5000);
+            setTimeout(() => { balloon.remove(); }, 5000);
         }
     </script>
 </body>
