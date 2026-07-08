@@ -144,74 +144,64 @@
     <div class="container" id="main-card">
         <h1 id="question-text">Beni Affettin mi Sevde? 🥺</h1>
         <div class="btn-container">
-            <button class="btn btn-yes" id="yes-btn" onclick="handleYes()">Evet</button>
-            <button class="btn btn-no" id="no-btn" onclick="handleNo()">Hayır</button>
+            <button class="btn btn-yes" id="yes-btn" onclick="sayYes()">Evet</button>
+            <button class="btn btn-no" id="no-btn" onclick="sayNo()">Hayır</button>
         </div>
     </div>
 
     <script>
         let clickCount = 0;
         let yesScale = 1;
-        let isEminMisinStage = false;
         
-        const questionText = document.getElementById('question-text');
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
         const mainCard = document.getElementById('main-card');
 
-        // İlk soruda Hayır'a basınca burası tetiklenir
-        function handleNo() {
-            if (!isEminMisinStage) {
-                // "Emin misin?" aşamasına geçiş
-                isEminMisinStage = true;
-                questionText.innerText = "Emin misin Sevde? 💔";
+        function sayNo() {
+            clickCount++;
+            
+            if (clickCount >= 8) {
+                // 8. tıklamada Evet butonu tüm ekranı kaplar
+                yesBtn.classList.add('fullscreen-yes');
+                yesBtn.innerText = "EVET!";
+                noBtn.style.display = 'none';
             } else {
-                // "Emin misin?" sorusuna HAYIR derse -> Affetmiş sayılıyor!
-                showSuccessScreen();
+                // Her hayır butonuna basıldığında Evet butonu büyür
+                yesScale += 1; 
+                yesBtn.style.transform = `scale(${yesScale})`;
+                yesBtn.style.margin = `${yesScale * 10}px`;
             }
         }
 
-        // İlk soruda Evet'e veya sonraki aşamada Evet'e basınca burası tetiklenir
-        function handleYes() {
-            if (!isEminMisinStage) {
-                // İlk başta direkt Evet derse
-                showSuccessScreen();
-            } else {
-                // "Emin misin?" sorusuna EVET derse -> İnat ediyor demektir, buton büyür!
-                clickCount++;
-                
-                if (clickCount >= 8) {
-                    // 8. kez inat ederse Evet butonu tüm ekranı kaplar
-                    yesBtn.classList.add('fullscreen-yes');
-                    yesBtn.innerText = "EVET!";
-                    noBtn.style.display = 'none';
-                } else {
-                    // Her inat ettiğinde Evet butonu büyür
-                    yesScale += 1; 
-                    yesBtn.style.transform = `scale(${yesScale})`;
-                    yesBtn.style.margin = `${yesScale * 10}px`;
-                }
-            }
-        }
-
-        function showSuccessScreen() {
+        function sayYes() {
+            // Tam ekran modundaysa sınıfı temizle
             yesBtn.classList.remove('fullscreen-yes');
+            
+            // Başarı ekranına dönüştür
             mainCard.innerHTML = `
                 <h1 style="font-size: 3rem; color: #ff4d6d;">Biliyordummm! 🥰</h1>
                 <p style="font-size: 1.5rem; color: #c0392b; font-weight: bold;">Sen müthiş birisin Sevde! ❤️</p>
             `;
+            
+            // Balon yağmurunu başlat
             setInterval(createBalloon, 300);
         }
 
         function createBalloon() {
             const balloon = document.createElement('div');
             balloon.classList.add('balloon');
+            
             const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#c9184a', '#ffccd5'];
             balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
             balloon.style.left = Math.random() * 100 + 'vw';
             balloon.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            
             document.body.appendChild(balloon);
-            setTimeout(() => { balloon.remove(); }, 5000);
+            
+            setTimeout(() => {
+                balloon.remove();
+            }, 5000);
         }
     </script>
 </body>
